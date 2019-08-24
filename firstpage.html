@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>takken game</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<style type="text/css">
+		body {
+            background-image: url("img/download.png");
+            background-size: 100% 100%;
+            background-repeat: repeat-y;		
+       
+        }
+        /*make a interface so that button are in center ,button are left or right respact of main block*/
+        #main{
+            width: 80%;
+            margin-top: 100px;
+            height: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+        }
+        button{
+            background-color: black;
+            position: absolute;
+            margin-left: 40%;
+            margin-right: 40%;
+            margin-top: 30%;
+            width: 25%;
+            height: 50px;
+            transition: all 1s linear;
+            
+            
+        }
+        button:hover,button:active{
+            transform: scale(1.15);
+            background-color: crimson;
+            
+            
+        }
+         a{
+            text-decoration: none;
+            font-family: fantasy;
+            font-size: 30px;
+            color: red;
+            text-shadow: 5px 5px 5px white;
+            display: block;
+        } 
+        audio:hover, audio:active{
+            box-shadow: 15px 15px 20px rgba(0,0,0,.4);
+            transform: scale(1.05);
+            background-color: pink;
+        }
+        audio{
+            transition: all .5s linear;
+            box-shadow: 5px 5px 6px #888888;
+            border-radius: 10px 10px 10px 10px;
+            background-color: aqua;
+           /* visibility: hidden;*/
+        }
+            
+            
+            
+        
+       
+       
+
+	</style>
+</head>
+<body>
+    <div id="main">
+      <button ><a href="second.html">START</a> </button>
+       
+        </div>
+     <audio controls autoplay loop>
+        <source src ="img/Game-Menu.mp3" type="audio">this is not supported</audio>
+    
+    
+</body>
+</html>
