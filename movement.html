@@ -13,7 +13,7 @@ canvas {
 <script>
 
 var myGamePiece, myGamePiece2;
-
+var keys=[];
 function startGame() {
     myGamePiece = new component(200, 200, "temp.png", 30, 120, "image");
     myGamePiece2 = new component(200, 200, "temp2.png", 500, 120, "image");
@@ -29,6 +29,7 @@ var myGameArea = {
         document.body.insertBefore(this.canvas, document.body.childNodes[0]);
         this.frameNo = 0;
         this.interval = setInterval(updateGameArea, 20);
+		
         },
     clear : function() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -63,14 +64,24 @@ function component(width, height, color, x, y, type) {
         } else {
             ctx.fillStyle = color;
             ctx.fillRect(this.x, this.y, this.width, this.height);
-        }
+        }		
     }
     this.newPos = function() {
         this.x += this.speedX;
-        this.y += this.speedY;        
-    }
+        this.y += this.speedY;
+		this.hitbottom();
+	}
+		
+	this.hitbottom = function() {
+		var hit = myGameArea.canvas.height - this.height;
+		if(this.y > hit) {
+			this.y = hit;
+		}
+	}
+   
 }
-	
+	var	width=canvas.width,
+	height=canvas.height;
 function updateGameArea() {
     myGameArea.clear();
     myGamePiece.newPos();
@@ -78,14 +89,26 @@ function updateGameArea() {
     myGamePiece.update()
 	myGamePiece2.update();
 }
+setInterval(update,1);
 
-	/*
+	document.body.addEventListener("keydown", function(e) {
+    keys[e.keyCode] = true;
+	console.log("yes");
+});
+
+document.body.addEventListener("keyup", function(e) {
+    keys[e.keyCode] = false;
+});
+
 function update(){
-	  if (keys[38] || keys[32]) {
+	myGameArea.clear();
+/*	  if (keys[38] || keys[32]) {
         // up arrow or space
+		  movedown();
+		  console.log("done");
       if(!myGamePiece.jumping){
        myGamePiece.jumping = true;
-       myGamePiece.speedY = -myGamePiece.speed*2;
+       myGamePiece.speedY = -1;
       }
     }
     if (keys[39]) {
@@ -127,22 +150,15 @@ function update(){
         }
     
   requestAnimationFrame(update);
-	
+*/	
 }
 	
 	
-document.body.addEventListener("keydown", function(e) {
-    keys[e.keyCode] = true;
-});
-
-document.body.addEventListener("keyup", function(e) {
-    keys[e.keyCode] = false;
-});
 
 
 window.addEventListener("load",function(){
     update();
-});*/
+});
 	
 /*function moveup() {
     if(!myGamePiece.jumping){
@@ -163,7 +179,7 @@ window.addEventListener("load",function(){
 }
 
 */
-	function moveup(){
+function moveup(){
 		myGamePiece.speedY = -1;
 	}
 function movedown() {
