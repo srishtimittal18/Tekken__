@@ -3,22 +3,54 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <style>
+	body{
+		position: relative;
+		
+	}
 canvas {
     border:1px solid #d3d3d3;
-    background-color: #f1f1f1;
-}
+	background-color: rgba(0,0,0,0);
+    background-image: url(b.jpg);
+	background-repeat: no-repeat;
+	background-size: cover;
+	margin:0px;
+	position: absolute;
+	font-size: 200px;
+	color: white;
+	width: 1500px;
+	height: 700px;
+	}
 </style>
 </head>
 <body onload="startGame()">
 <script>
 
 var myGamePiece;
-
+var myMusic;
+	var mySound;
 function startGame() {
-    myGameArea.start();
+    
+	myMusic = new sound("punch.mp3");
+	mySound = new sound("music.mp3");
+	myMusic.play();
+	myGameArea.start();
+    myGamePiece1 = new component(70, 150, "img1.png","img2.png", 10, 120,38,39,37,15,186,10,30);
+    myGamePiece2 = new component(70,150,"img3.png","img4.png",350,120,87,68,65,15,84,365,30);
+}
 	
-    myGamePiece1 = new component(100, 200, "img1.png","img2.png", 10, 120,38,39,37,15,186,10,50);
-    myGamePiece2 = new component(100,200,"img3.png","img4.png",280,120,87,68,65,15,84,180,50);
+function sound(src) {
+    this.sound = document.createElement("audio");
+    this.sound.src = src;
+    this.sound.setAttribute("preload", "auto");
+    this.sound.setAttribute("controls", "none");
+    this.sound.style.display = "none";
+    document.body.appendChild(this.sound);
+    this.play = function(){
+        this.sound.play();
+    }
+    this.stop = function(){
+        this.sound.pause();
+    }    
 }
 
 var myGameArea = {
@@ -42,7 +74,6 @@ var myGameArea = {
       this.context.clearRect(0,0,this.canvas.width,this.canvas.height);
     }
 }
-var srcleft="img3.png";
 
 function component(width, height, img1,img2, x,y ,jumpkey,right,left,range,punchkey,health_x,health_y) {
     this.width = width;
@@ -94,7 +125,7 @@ function component(width, height, img1,img2, x,y ,jumpkey,right,left,range,punch
     this.update=function()
     {
       ctx = myGameArea.context;
-      
+      mySound.play();
       ctx.fillRect(this.health_x, this.health_y, this.health,15);
       if(!this.punch){
       ctx.drawImage(this.image1,this.x,this.y,this.width,this.height);  
@@ -144,13 +175,15 @@ function punch_detect()
 {
   if(myGamePiece1.punch)
   {
-    if(myGamePiece1.x+50>myGamePiece2.x)
+    myMusic.play();
+	  if(myGamePiece1.x+50>myGamePiece2.x)
     {
       myGamePiece2.health-=2;
     }
   }
   if(myGamePiece2.punch)
   {
+	  myMusic.play();
     if(myGamePiece1.x+25>myGamePiece2.x-10)
     {
       myGamePiece1.health-=2;
@@ -179,10 +212,8 @@ function updateGameArea()
   punch_detect();
   Win();
 }
+	
 
 </script>
-
-
-
 </body>
 </html>
