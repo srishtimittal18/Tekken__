@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<style>
+canvas {
+    border:1px solid #d3d3d3;
+    background-color: #f1f1f1;
+}
+</style>
+</head>
+<body onload="startGame()">
+<script>
+
+var myGamePiece;
+
+function startGame() {
+    myGameArea.start();
+    myGamePiece1 = new component(30, 30, "red","black", 10, 120,38,39,37,15,186,10,50);
+    myGamePiece2 = new component(30,30,"blue","pink",280,120,87,68,65,15,84,180,50);
+}
+
+var myGameArea = {
+    canvas : document.createElement("canvas"),
+    start : function() {
+        this.canvas.width = 480;
+        this.canvas.height = 270;
+        this.context = this.canvas.getContext("2d");
+        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
+        this.interval=setInterval(updateGameArea,20);
+        window.addEventListener('keydown', function (e) {
+          myGameArea.keys = (myGameArea.keys || []);
+             myGameArea.keys[e.keyCode] = true;
+  })
+  window.addEventListener('keyup', function (e) {
+   myGameArea.keys[e.keyCode] = false;
+  })
+    },
+    clear: function()
+    {
+      this.context.clearRect(0,0,this.canvas.width,this.canvas.height);
+    }
+}
+
+function component(width, height, color1,color2, x,y ,jumpkey,right,left,range,punchkey,health_x,health_y) {
+    this.width = width;
+    this.height = height;
+    this.x = x;
+    this.y = y;
+    this.speedX=0;
+    this.speedY=0;
+    this.gravity=0.06;
+    this.friction=0.02;
+    this.jumpkey=jumpkey;
+    this.left=left;
+    this.right=right;
+    this.punch=false;
+    this.range=range;
+    this.punchkey=punchkey;
+    this.health=100;
+    this.health_x=health_x;
+    this.health_y=health_y;
+    this.jump=function() {
+      this.speedY = -1;
+    }
+
+    this.movedown=function() {
+      this.speedY = 1;
+    }
+
+    this.moveleft=function() {
+      this.speedX = -1;
+    }
+
+    this.moveright=function() {
+      this.speedX = 1;
+    }
+    this.control=function()
+    {
+      if (myGameArea.keys && myGameArea.keys[this.left]) {this.moveleft(); }
+     if (myGameArea.keys && myGameArea.keys[this.right]) {this.moveright();}
+     if (myGameArea.keys && myGameArea.keys[this.jumpkey]) {this.jump();}
+     if (myGameArea.keys && myGameArea.keys[this.punchkey]) {this.punch=true;}
+     if (myGameArea.keys && !myGameArea.keys[this.punchkey]) {this.punch=false;}
+
+     //if (myGameArea.key && myGameArea.key == 40) {myGamePiece.speedY += 1; }
+   }
+    this.update=function()
+    {
+      ctx = myGameArea.context;
+      // ctx.fillStyle = color;
+      ctx.font=500+" "+500;
+      ctx.fillRect(this.health_x, this.health_y, this.health,15);
+      if(!this.punch){
+        ctx.fillStyle = color1;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
+      }
+      else{
+        ctx.fillStyle = color2;
+        ctx.fillRect(this.x, this.y, this.width+this.range, this.height);
+      }
+      if(this.speedX>0)
+      {
+        this.speedX-=this.friction;
+      }
+      else if(this.speedX<0)
+      {
+        this.speedX+=this.friction;
+      }
+      this.x+=this.speedX;
+      this.y+=this.speedY;
+      this.speedY+=this.gravity;
+      cnv=myGameArea.canvas;
+      if(this.y>=cnv.height-this.height)
+      {
+        this.y=cnv.height-this.height;
+        this.speedY=0;
+      //  this.y=this.y-this.height;
+      //  console.log("a");
+      }
+      if(this.x>=cnv.width-this.width)
+      {
+        this.x=cnv.width-this.width;
+        this.speedX=0;
+
+      }
+      if(this.x>=cnv.width-this.width)
+      {
+        this.x=cnv.width-this.width;
+        this.speedX=0;
+      }
+      if(this.x<=0)
+      {
+        this.x=0;
+        this.speedX=0;
+      }
+
+    }
+}
+function punch_detect()
+{
+  if(myGamePiece1.punch)
+  {
+    if(myGamePiece1.x+myGamePiece1.width>myGamePiece2.x-myGamePiece2.width )
+    {
+      myGamePiece2.health-=5;
+    }
+  }
+  if(myGamePiece2.punch)
+  {
+    if(myGamePiece2.x+myGamePiece2.width>myGamePiece1.x-myGamePiece1.width)
+    {
+      myGamePiece1.health-=5;
+    }
+  }
+}
+function Win()
+{
+  if(myGamePiece2.health<0){
+	  
+	  clearInterval();
+    myGameArea.interval="";
+  myGameArea.context.fillText("PLAYER 1 wins",240,135);
+	  myGamePiece2.health=0;}
+  if(myGamePiece1.health<0){
+	  myGamePiece1.health=0;
+	  clearInterval();
+    myGameArea.interval="";
+  myGameArea.context.fillText("PLAYER 2 wins",240,135);}
+}
+
+function updateGameArea()
+{
+  myGameArea.clear();
+  myGamePiece1.control();
+  myGamePiece1.update();
+  myGamePiece2.control();
+  myGamePiece2.update();
+  punch_detect();
+  Win();
+}
+
+</script>
+
+
+
+</body>
+</html>
