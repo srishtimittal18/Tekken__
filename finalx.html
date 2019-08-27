@@ -16,8 +16,9 @@ var myGamePiece;
 
 function startGame() {
     myGameArea.start();
-    myGamePiece1 = new component(30, 30, "red","black", 10, 120,38,39,37,15,186,10,50);
-    myGamePiece2 = new component(30,30,"blue","pink",280,120,87,68,65,15,84,180,50);
+	
+    myGamePiece1 = new component(100, 200, "img1.png","img2.png", 10, 120,38,39,37,15,186,10,50);
+    myGamePiece2 = new component(100,200,"img3.png","img4.png",280,120,87,68,65,15,84,180,50);
 }
 
 var myGameArea = {
@@ -41,8 +42,9 @@ var myGameArea = {
       this.context.clearRect(0,0,this.canvas.width,this.canvas.height);
     }
 }
+var srcleft="img3.png";
 
-function component(width, height, color1,color2, x,y ,jumpkey,right,left,range,punchkey,health_x,health_y) {
+function component(width, height, img1,img2, x,y ,jumpkey,right,left,range,punchkey,health_x,health_y) {
     this.width = width;
     this.height = height;
     this.x = x;
@@ -56,6 +58,10 @@ function component(width, height, color1,color2, x,y ,jumpkey,right,left,range,p
     this.right=right;
     this.punch=false;
     this.range=range;
+	this.image1=new Image();
+	this.image2=new Image();
+	this.image1.src=img1;
+	this.image2.src=img2;
     this.punchkey=punchkey;
     this.health=100;
     this.health_x=health_x;
@@ -69,11 +75,11 @@ function component(width, height, color1,color2, x,y ,jumpkey,right,left,range,p
     }
 
     this.moveleft=function() {
-      this.speedX = -1;
+      this.speedX = -2;	  
     }
 
     this.moveright=function() {
-      this.speedX = 1;
+      this.speedX = 2;
     }
     this.control=function()
     {
@@ -88,17 +94,14 @@ function component(width, height, color1,color2, x,y ,jumpkey,right,left,range,p
     this.update=function()
     {
       ctx = myGameArea.context;
-      // ctx.fillStyle = color;
-      ctx.font=500+" "+500;
+      
       ctx.fillRect(this.health_x, this.health_y, this.health,15);
       if(!this.punch){
-        ctx.fillStyle = color1;
-        ctx.fillRect(this.x, this.y, this.width, this.height);
-      }
+      ctx.drawImage(this.image1,this.x,this.y,this.width,this.height);  
+	  }
       else{
-        ctx.fillStyle = color2;
-        ctx.fillRect(this.x, this.y, this.width+this.range, this.height);
-      }
+		  ctx.drawImage(this.image2,this.x,this.y,this.width,this.height);
+	  }
       if(this.speedX>0)
       {
         this.speedX-=this.friction;
@@ -115,7 +118,7 @@ function component(width, height, color1,color2, x,y ,jumpkey,right,left,range,p
       {
         this.y=cnv.height-this.height;
         this.speedY=0;
-      //  this.y=this.y-this.height;
+      
       //  console.log("a");
       }
       if(this.x>=cnv.width-this.width)
@@ -141,32 +144,29 @@ function punch_detect()
 {
   if(myGamePiece1.punch)
   {
-    if(myGamePiece1.x+myGamePiece1.width>myGamePiece2.x-myGamePiece2.width )
+    if(myGamePiece1.x+50>myGamePiece2.x)
     {
-      myGamePiece2.health-=5;
+      myGamePiece2.health-=2;
     }
   }
   if(myGamePiece2.punch)
   {
-    if(myGamePiece2.x+myGamePiece2.width>myGamePiece1.x-myGamePiece1.width)
+    if(myGamePiece1.x+25>myGamePiece2.x-10)
     {
-      myGamePiece1.health-=5;
+      myGamePiece1.health-=2;
     }
   }
 }
 function Win()
 {
-  if(myGamePiece2.health<0){
-	  
-	  clearInterval();
-    myGameArea.interval="";
-  myGameArea.context.fillText("PLAYER 1 wins",240,135);
+  if(myGamePiece2.health<=0){
+	  clearInterval(myGameArea.interval);
+      myGameArea.context.fillText("PLAYER 1 wins",240,135);
 	  myGamePiece2.health=0;}
-  if(myGamePiece1.health<0){
+  if(myGamePiece1.health<=0){
 	  myGamePiece1.health=0;
-	  clearInterval();
-    myGameArea.interval="";
-  myGameArea.context.fillText("PLAYER 2 wins",240,135);}
+	  clearInterval(myGameArea.interval);
+  	  myGameArea.context.fillText("PLAYER 2 wins",240,135);}
 }
 
 function updateGameArea()
